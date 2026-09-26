@@ -2,6 +2,7 @@ class AppRoutes {
   AppRoutes._();
 
   static const String root = '/';
+  static const String splash = '/splash';
   static const String courses = '/courses';
 
   static const String courseIdParam = 'courseId';

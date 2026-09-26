@@ -29,6 +29,8 @@ class AppPalette extends ThemeExtension<AppPalette> {
   final Color seekFill;
   final Color seekThumb;
   final Color shade;
+  final Color brand;
+  final Color onBrand;
 
   const AppPalette({
     required this.bg,
@@ -56,6 +58,8 @@ class AppPalette extends ThemeExtension<AppPalette> {
     required this.seekFill,
     required this.seekThumb,
     required this.shade,
+    required this.brand,
+    required this.onBrand,
   });
 
   static const AppPalette light = AppPalette(
@@ -84,6 +88,8 @@ class AppPalette extends ThemeExtension<AppPalette> {
     seekFill: AppColors.accent400,
     seekThumb: AppColors.accent300,
     shade: AppColors.black,
+    brand: AppColors.brand,
+    onBrand: AppColors.white,
   );
 
   static const AppPalette dark = AppPalette(
@@ -112,6 +118,8 @@ class AppPalette extends ThemeExtension<AppPalette> {
     seekFill: AppColors.accent400,
     seekThumb: AppColors.accent300,
     shade: AppColors.black,
+    brand: AppColors.brand,
+    onBrand: AppColors.white,
   );
 
   @override
@@ -141,6 +149,8 @@ class AppPalette extends ThemeExtension<AppPalette> {
     Color? seekFill,
     Color? seekThumb,
     Color? shade,
+    Color? brand,
+    Color? onBrand,
   }) {
     return AppPalette(
       bg: bg ?? this.bg,
@@ -168,6 +178,8 @@ class AppPalette extends ThemeExtension<AppPalette> {
       seekFill: seekFill ?? this.seekFill,
       seekThumb: seekThumb ?? this.seekThumb,
       shade: shade ?? this.shade,
+      brand: brand ?? this.brand,
+      onBrand: onBrand ?? this.onBrand,
     );
   }
 
@@ -201,6 +213,8 @@ class AppPalette extends ThemeExtension<AppPalette> {
       seekFill: mix(seekFill, other.seekFill),
       seekThumb: mix(seekThumb, other.seekThumb),
       shade: mix(shade, other.shade),
+      brand: mix(brand, other.brand),
+      onBrand: mix(onBrand, other.onBrand),
     );
   }
 }

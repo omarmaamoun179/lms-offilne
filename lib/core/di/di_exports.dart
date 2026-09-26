@@ -9,6 +9,7 @@ import '../../features/lesson_player/cubit/lesson_notes_cubit.dart';
 import '../../features/lesson_player/cubit/lesson_player_cubit.dart';
 import '../../features/lesson_player/repositories/lesson_media_repository.dart';
 import '../../features/lesson_player/repositories/lesson_notes_repository.dart';
+import '../../features/splash/cubit/splash_cubit.dart';
 import '../app/theme_cubit.dart';
 import '../data/theme_store.dart';
 import '../localization/content_language.dart';

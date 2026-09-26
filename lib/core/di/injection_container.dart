@@ -4,6 +4,7 @@ Future<void> initDependencies() async {
   await _registerCore();
   _registerCoursesFeature();
   _registerLessonPlayerFeature();
+  _registerSplashFeature();
 }
 
 Future<void> _registerCore() async {
@@ -47,6 +48,10 @@ void _registerLessonPlayerFeature() {
     ),
   );
   sl.registerFactory(() => LessonNotesCubit(sl<LessonNotesRepository>()));
+}
+
+void _registerSplashFeature() {
+  sl.registerFactory(() => SplashCubit(sl<CourseRepository>()));
 }
 
 Future<void> resetDependencies() => sl.reset();
