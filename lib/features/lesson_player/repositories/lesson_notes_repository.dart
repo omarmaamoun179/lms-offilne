@@ -19,16 +19,21 @@ abstract class LessonNotesRepository {
 
 class LessonNotesRepositoryImpl implements LessonNotesRepository {
   static String keyFor(String lessonId) => 'lesson_notes.$lessonId';
+  static const Duration loadingDelay = Duration(milliseconds: 800);
 
   final SharedPreferences _prefs;
+  final Duration delay;
 
-  LessonNotesRepositoryImpl(this._prefs);
+  LessonNotesRepositoryImpl(this._prefs, {this.delay = loadingDelay});
 
   @override
   Future<Either<Failure, List<LessonNote>>> getNotes(String lessonId) =>
       guardedStorage(
         'LessonNotesRepository.getNotes',
-        () async => _read(lessonId),
+        () async {
+          await Future<void>.delayed(delay);
+          return _read(lessonId);
+        },
         fallbackMessage: 'notes_load_failed',
       );
 

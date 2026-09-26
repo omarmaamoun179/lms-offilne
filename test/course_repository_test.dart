@@ -18,7 +18,12 @@ void main() {
   });
 
   CourseRepositoryImpl repository([String language = 'ar']) =>
-      CourseRepositoryImpl(rootBundle, prefs, ContentLanguage(language));
+      CourseRepositoryImpl(
+        rootBundle,
+        prefs,
+        ContentLanguage(language),
+        delay: Duration.zero,
+      );
 
   Future<CourseLibrary> library(String language) async =>
       (await repository(language).getLibrary())

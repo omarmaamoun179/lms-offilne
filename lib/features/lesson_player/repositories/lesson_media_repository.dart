@@ -28,15 +28,18 @@ abstract class LessonMediaRepository {
 
 class LessonMediaRepositoryImpl implements LessonMediaRepository {
   static const String speedKey = 'playback_speed';
+  static const Duration loadingDelay = Duration(milliseconds: 800);
 
   final AssetBundle _assets;
   final SharedPreferences _prefs;
   final VideoControllerFactory _createController;
+  final Duration delay;
 
   LessonMediaRepositoryImpl(
     this._assets,
     this._prefs, {
     VideoControllerFactory? createController,
+    this.delay = loadingDelay,
   }) : _createController = createController ?? VideoPlayerController.asset;
 
   @override
@@ -48,6 +51,7 @@ class LessonMediaRepositoryImpl implements LessonMediaRepository {
       guardedStorage(
         'LessonMediaRepository.openVideo',
         () async {
+          await Future<void>.delayed(delay);
           if (!(await _bundledAssets()).contains(lesson.video)) {
             throw const MediaException();
           }

@@ -33,13 +33,20 @@ abstract class CourseRepository {
 
 class CourseRepositoryImpl implements CourseRepository {
   static const String progressKey = 'lesson_progress';
+  static const Duration loadingDelay = Duration(milliseconds: 800);
 
   final AssetBundle _assets;
   final SharedPreferences _prefs;
   final ContentLanguage _language;
+  final Duration delay;
   final StreamController<String> _changes = StreamController.broadcast();
 
-  CourseRepositoryImpl(this._assets, this._prefs, this._language);
+  CourseRepositoryImpl(
+    this._assets,
+    this._prefs,
+    this._language, {
+    this.delay = loadingDelay,
+  });
 
   @override
   Stream<String> get progressChanges => _changes.stream;
@@ -48,6 +55,7 @@ class CourseRepositoryImpl implements CourseRepository {
   Future<Either<Failure, CourseLibrary>> getLibrary() => guardedStorage(
         'CourseRepository.getLibrary',
         () async {
+          await Future<void>.delayed(delay);
           final catalog = await _loadCatalog();
           final progress = _readProgress();
           return CourseLibrary(
@@ -65,7 +73,10 @@ class CourseRepositoryImpl implements CourseRepository {
   Future<Either<Failure, CourseProgress>> getCourse(String courseId) =>
       guardedStorage(
         'CourseRepository.getCourse',
-        () => _courseProgress(courseId),
+        () async {
+          await Future<void>.delayed(delay);
+          return _courseProgress(courseId);
+        },
         fallbackMessage: 'courses_load_failed',
       );
 

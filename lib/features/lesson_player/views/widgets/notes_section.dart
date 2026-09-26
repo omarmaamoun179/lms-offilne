@@ -44,7 +44,7 @@ class NotesSection extends StatelessWidget {
         const SizedBox(height: 10),
         BlocBuilder<LessonNotesCubit, LessonNotesState>(
           builder: (context, state) => switch (state.status) {
-            NotesStatus.loading => const SizedBox.shrink(),
+            NotesStatus.loading => _buildSkeleton(context),
             NotesStatus.error => _buildMessage(context, state.errorMessage),
             NotesStatus.loaded when state.notes.isEmpty =>
               _buildMessage(context, 'notes_empty'.tr()),
@@ -56,6 +56,40 @@ class NotesSection extends StatelessWidget {
               ),
           },
         ),
+      ],
+    );
+  }
+
+  Widget _buildSkeleton(BuildContext context) {
+    final fill = context.palette.neutral200;
+    Widget bar(double width, double height) => Container(
+          width: width,
+          height: height,
+          decoration: BoxDecoration(
+            color: fill,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        );
+
+    return Column(
+      children: [
+        for (final width in const [.8, .55])
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Row(
+              children: [
+                bar(30, 10),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: FractionallySizedBox(
+                    alignment: AlignmentDirectional.centerStart,
+                    widthFactor: width,
+                    child: bar(double.infinity, 12),
+                  ),
+                ),
+              ],
+            ),
+          ),
       ],
     );
   }

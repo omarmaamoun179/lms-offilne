@@ -28,6 +28,7 @@ void main() {
           created = true;
           return VideoPlayerController.asset(asset);
         },
+        delay: Duration.zero,
       );
       const lesson = Lesson(
         id: 'physiology-2',
@@ -54,7 +55,11 @@ void main() {
 
     test('playback speed starts at 1x and remembers the last choice',
         () async {
-      final repository = LessonMediaRepositoryImpl(rootBundle, prefs);
+      final repository = LessonMediaRepositoryImpl(
+        rootBundle,
+        prefs,
+        delay: Duration.zero,
+      );
 
       final initial = await repository.getSpeed();
       await repository.saveSpeed(1.25);
@@ -67,7 +72,11 @@ void main() {
     test('a stored speed the player does not offer falls back to 1x',
         () async {
       await prefs.setDouble(LessonMediaRepositoryImpl.speedKey, 3);
-      final repository = LessonMediaRepositoryImpl(rootBundle, prefs);
+      final repository = LessonMediaRepositoryImpl(
+        rootBundle,
+        prefs,
+        delay: Duration.zero,
+      );
 
       final speed = await repository.getSpeed();
 
@@ -77,7 +86,10 @@ void main() {
 
   group('LessonNotesRepository', () {
     test('a lesson with no notes has an empty list', () async {
-      final repository = LessonNotesRepositoryImpl(prefs);
+      final repository = LessonNotesRepositoryImpl(
+        prefs,
+        delay: Duration.zero,
+      );
 
       final notes = await repository.getNotes('anatomy-3');
 
@@ -85,7 +97,10 @@ void main() {
     });
 
     test('notes are kept per lesson, trimmed, newest first', () async {
-      final repository = LessonNotesRepositoryImpl(prefs);
+      final repository = LessonNotesRepositoryImpl(
+        prefs,
+        delay: Duration.zero,
+      );
 
       await repository.addNote(
         'anatomy-3',
