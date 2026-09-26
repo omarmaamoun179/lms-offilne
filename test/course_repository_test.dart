@@ -61,6 +61,19 @@ void main() {
     }
   });
 
+  test('every course thumbnail is bundled, in both languages', () async {
+    final manifest = await AssetManifest.loadFromAssetBundle(rootBundle);
+    final bundled = manifest.listAssets().toSet();
+
+    for (final language in ['ar', 'en']) {
+      for (final entry in (await library(language)).courses) {
+        final thumbnail = entry.course.thumbnail;
+        expect(thumbnail, isNotNull, reason: entry.course.id);
+        expect(bundled, contains(thumbnail), reason: '$language $thumbnail');
+      }
+    }
+  });
+
   test('saved progress comes back, unlocks the next lesson and is announced',
       () async {
     final repo = repository();

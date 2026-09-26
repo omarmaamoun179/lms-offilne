@@ -34,6 +34,7 @@ flutter:
   assets:
     - assets/translations/
     - assets/data/
+    - assets/images/
     - assets/videos/anatomy/
     - assets/videos/physiology/
     - assets/fonts/licenses/

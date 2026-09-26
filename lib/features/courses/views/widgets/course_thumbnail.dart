@@ -13,6 +13,7 @@ class CourseThumbnail extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = context.palette;
     final placeholder = StripedBox(base: p.neutral200, line: p.stripe);
+    final pixels = (size * MediaQuery.devicePixelRatioOf(context)).ceil();
 
     return Container(
       padding: const EdgeInsets.all(3),
@@ -28,6 +29,23 @@ class CourseThumbnail extends StatelessWidget {
             : Image.asset(
                 asset!,
                 fit: BoxFit.cover,
+                cacheWidth: pixels,
+                cacheHeight: pixels,
+                filterQuality: FilterQuality.medium,
+                excludeFromSemantics: true,
+                frameBuilder: (context, child, frame, sync) => sync
+                    ? child
+                    : Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          placeholder,
+                          AnimatedOpacity(
+                            opacity: frame == null ? 0 : 1,
+                            duration: const Duration(milliseconds: 200),
+                            child: child,
+                          ),
+                        ],
+                      ),
                 errorBuilder: (_, _, _) => placeholder,
               ),
       ),

@@ -7,7 +7,7 @@
       "id": "anatomy",
       "title": "مقدمة في التشريح",
       "instructor": "د. سارة العتيبي",
-      "thumbnail": null,
+      "thumbnail": "assets/images/anatomy.jpg",
       "sections": [
         {
           "id": "anatomy-skeletal",
@@ -57,7 +57,7 @@
       "id": "physiology",
       "title": "أساسيات علم وظائف الأعضاء",
       "instructor": "د. خالد المنصور",
-      "thumbnail": null,
+      "thumbnail": "assets/images/physiology.jpg",
       "sections": [
         {
           "id": "physiology-heart",
@@ -107,7 +107,7 @@
       "id": "pharmacology",
       "title": "مبادئ علم الأدوية",
       "instructor": "د. ريم الحربي",
-      "thumbnail": null,
+      "thumbnail": "assets/images/pharmacology.jpg",
       "sections": []
     }
   ]

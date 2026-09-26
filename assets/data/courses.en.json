@@ -7,7 +7,7 @@
       "id": "anatomy",
       "title": "Introduction to Anatomy",
       "instructor": "Dr. Sara Al-Otaibi",
-      "thumbnail": null,
+      "thumbnail": "assets/images/anatomy.jpg",
       "sections": [
         {
           "id": "anatomy-skeletal",
@@ -57,7 +57,7 @@
       "id": "physiology",
       "title": "Foundations of Physiology",
       "instructor": "Dr. Khalid Al-Mansour",
-      "thumbnail": null,
+      "thumbnail": "assets/images/physiology.jpg",
       "sections": [
         {
           "id": "physiology-heart",
@@ -107,7 +107,7 @@
       "id": "pharmacology",
       "title": "Principles of Pharmacology",
       "instructor": "Dr. Reem Al-Harbi",
-      "thumbnail": null,
+      "thumbnail": "assets/images/pharmacology.jpg",
       "sections": []
     }
   ]
