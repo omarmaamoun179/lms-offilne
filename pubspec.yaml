@@ -37,6 +37,7 @@ flutter:
     - assets/images/
     - assets/videos/anatomy/
     - assets/videos/physiology/
+    - assets/videos/thaheen_offline_video_assets/
     - assets/fonts/licenses/
 
   fonts:

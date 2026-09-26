@@ -16,14 +16,14 @@
             {
               "id": "anatomy-1",
               "title": "Bones",
-              "duration_seconds": 95,
-              "video": "assets/videos/anatomy/lesson1.mp4"
+              "duration_seconds": 12,
+              "video": "assets/videos/thaheen_offline_video_assets/lesson_bones.mp4"
             },
             {
               "id": "anatomy-2",
               "title": "Joints",
-              "duration_seconds": 130,
-              "video": "assets/videos/anatomy/lesson2.mp4"
+              "duration_seconds": 12,
+              "video": "assets/videos/thaheen_offline_video_assets/lesson_joints.mp4"
             },
             {
               "id": "anatomy-3",
@@ -40,8 +40,8 @@
             {
               "id": "anatomy-4",
               "title": "Types of Muscle",
-              "duration_seconds": 140,
-              "video": "assets/videos/anatomy/lesson4.mp4"
+              "duration_seconds": 12,
+              "video": "assets/videos/thaheen_offline_video_assets/lesson_muscles.mp4"
             },
             {
               "id": "anatomy-5",
