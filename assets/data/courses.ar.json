@@ -1,0 +1,114 @@
+{
+  "student": {
+    "name": "نورة"
+  },
+  "courses": [
+    {
+      "id": "anatomy",
+      "title": "مقدمة في التشريح",
+      "instructor": "د. سارة العتيبي",
+      "thumbnail": null,
+      "sections": [
+        {
+          "id": "anatomy-skeletal",
+          "title": "الجهاز الهيكلي",
+          "lessons": [
+            {
+              "id": "anatomy-1",
+              "title": "العظام",
+              "duration_seconds": 95,
+              "video": "assets/videos/anatomy/lesson1.mp4"
+            },
+            {
+              "id": "anatomy-2",
+              "title": "المفاصل",
+              "duration_seconds": 130,
+              "video": "assets/videos/anatomy/lesson2.mp4"
+            },
+            {
+              "id": "anatomy-3",
+              "title": "الغضاريف",
+              "duration_seconds": 108,
+              "video": "assets/videos/anatomy/lesson3.mp4"
+            }
+          ]
+        },
+        {
+          "id": "anatomy-muscular",
+          "title": "الجهاز العضلي",
+          "lessons": [
+            {
+              "id": "anatomy-4",
+              "title": "أنواع العضلات",
+              "duration_seconds": 140,
+              "video": "assets/videos/anatomy/lesson4.mp4"
+            },
+            {
+              "id": "anatomy-5",
+              "title": "الانقباض العضلي",
+              "duration_seconds": 185,
+              "video": "assets/videos/anatomy/lesson5.mp4"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "physiology",
+      "title": "أساسيات علم وظائف الأعضاء",
+      "instructor": "د. خالد المنصور",
+      "thumbnail": null,
+      "sections": [
+        {
+          "id": "physiology-heart",
+          "title": "القلب",
+          "lessons": [
+            {
+              "id": "physiology-1",
+              "title": "بنية القلب",
+              "duration_seconds": 125,
+              "video": "assets/videos/physiology/lesson1.mp4"
+            },
+            {
+              "id": "physiology-2",
+              "title": "الدورة الدموية الصغرى",
+              "duration_seconds": 160,
+              "video": "assets/videos/physiology/lesson2.mp4"
+            },
+            {
+              "id": "physiology-3",
+              "title": "الدورة الدموية الكبرى",
+              "duration_seconds": 175,
+              "video": "assets/videos/physiology/lesson3.mp4"
+            }
+          ]
+        },
+        {
+          "id": "physiology-respiratory",
+          "title": "الجهاز التنفسي",
+          "lessons": [
+            {
+              "id": "physiology-4",
+              "title": "الرئتان",
+              "duration_seconds": 135,
+              "video": "assets/videos/physiology/lesson4.mp4"
+            },
+            {
+              "id": "physiology-5",
+              "title": "تبادل الغازات",
+              "duration_seconds": 190,
+              "video": "assets/videos/physiology/lesson5.mp4"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pharmacology",
+      "title": "مبادئ علم الأدوية",
+      "instructor": "د. ريم الحربي",
+      "thumbnail": null,
+      "sections": []
+    }
+  ]
+}

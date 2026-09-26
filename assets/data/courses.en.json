@@ -1,0 +1,114 @@
+{
+  "student": {
+    "name": "Noura"
+  },
+  "courses": [
+    {
+      "id": "anatomy",
+      "title": "Introduction to Anatomy",
+      "instructor": "Dr. Sara Al-Otaibi",
+      "thumbnail": null,
+      "sections": [
+        {
+          "id": "anatomy-skeletal",
+          "title": "The Skeletal System",
+          "lessons": [
+            {
+              "id": "anatomy-1",
+              "title": "Bones",
+              "duration_seconds": 95,
+              "video": "assets/videos/anatomy/lesson1.mp4"
+            },
+            {
+              "id": "anatomy-2",
+              "title": "Joints",
+              "duration_seconds": 130,
+              "video": "assets/videos/anatomy/lesson2.mp4"
+            },
+            {
+              "id": "anatomy-3",
+              "title": "Cartilage",
+              "duration_seconds": 108,
+              "video": "assets/videos/anatomy/lesson3.mp4"
+            }
+          ]
+        },
+        {
+          "id": "anatomy-muscular",
+          "title": "The Muscular System",
+          "lessons": [
+            {
+              "id": "anatomy-4",
+              "title": "Types of Muscle",
+              "duration_seconds": 140,
+              "video": "assets/videos/anatomy/lesson4.mp4"
+            },
+            {
+              "id": "anatomy-5",
+              "title": "Muscle Contraction",
+              "duration_seconds": 185,
+              "video": "assets/videos/anatomy/lesson5.mp4"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "physiology",
+      "title": "Foundations of Physiology",
+      "instructor": "Dr. Khalid Al-Mansour",
+      "thumbnail": null,
+      "sections": [
+        {
+          "id": "physiology-heart",
+          "title": "The Heart",
+          "lessons": [
+            {
+              "id": "physiology-1",
+              "title": "Structure of the Heart",
+              "duration_seconds": 125,
+              "video": "assets/videos/physiology/lesson1.mp4"
+            },
+            {
+              "id": "physiology-2",
+              "title": "Pulmonary Circulation",
+              "duration_seconds": 160,
+              "video": "assets/videos/physiology/lesson2.mp4"
+            },
+            {
+              "id": "physiology-3",
+              "title": "Systemic Circulation",
+              "duration_seconds": 175,
+              "video": "assets/videos/physiology/lesson3.mp4"
+            }
+          ]
+        },
+        {
+          "id": "physiology-respiratory",
+          "title": "The Respiratory System",
+          "lessons": [
+            {
+              "id": "physiology-4",
+              "title": "The Lungs",
+              "duration_seconds": 135,
+              "video": "assets/videos/physiology/lesson4.mp4"
+            },
+            {
+              "id": "physiology-5",
+              "title": "Gas Exchange",
+              "duration_seconds": 190,
+              "video": "assets/videos/physiology/lesson5.mp4"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pharmacology",
+      "title": "Principles of Pharmacology",
+      "instructor": "Dr. Reem Al-Harbi",
+      "thumbnail": null,
+      "sections": []
+    }
+  ]
+}
