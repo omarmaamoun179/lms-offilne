@@ -23,7 +23,7 @@ void showAppToast(BuildContext context, String message, {bool isError = false}) 
             AppIcon(
               isError ? AppIcons.alert : AppIcons.check,
               size: 16,
-              color: p.accent,
+              color: p.bg,
             ),
             const SizedBox(width: 10),
             Expanded(

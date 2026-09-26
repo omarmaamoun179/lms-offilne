@@ -95,19 +95,19 @@ func frame(at second: Int) -> CVPixelBuffer {
     bitmapInfo: CGImageAlphaInfo.premultipliedFirst.rawValue
   )!
 
-  context.setFillColor(color(0x2D2B2B))
+  context.setFillColor(color(0x282C32))
   context.fill(CGRect(x: 0, y: 0, width: width, height: height))
 
-  context.setStrokeColor(color(0xE1AD66, 0.55))
+  context.setStrokeColor(color(0x82BCFF, 0.55))
   context.setLineWidth(1)
   context.stroke(CGRect(x: 24.5, y: 24.5, width: CGFloat(width) - 49, height: CGFloat(height) - 49))
 
-  drawCentered(title, size: 34, color: color(0xF8F4F4), y: 196, in: context)
-  drawCentered(subtitle, size: 16, color: color(0xBAB6B6), y: 160, in: context)
+  drawCentered(title, size: 34, color: color(0xF0F6FD), y: 196, in: context)
+  drawCentered(subtitle, size: 16, color: color(0xB2B8BF), y: 160, in: context)
   drawCentered(
     "\(clock(second)) / \(clock(seconds))",
     size: 20,
-    color: color(0xE1AD66),
+    color: color(0x82BCFF),
     y: 104,
     in: context
   )
@@ -115,7 +115,7 @@ func frame(at second: Int) -> CVPixelBuffer {
   let track = CGRect(x: 72, y: 72, width: CGFloat(width) - 144, height: 2)
   context.setFillColor(color(0xFFFFFF, 0.2))
   context.fill(track)
-  context.setFillColor(color(0xE1AD66))
+  context.setFillColor(color(0x82BCFF))
   context.fill(
     CGRect(
       x: track.minX,
