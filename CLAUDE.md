@@ -39,6 +39,71 @@ only decides which data source each repository is built with.
 `runApp`. Nothing may reach the network before `runApp` (the requests
 inspector's controller is created disabled by whoever asks first).
 
+## This app: Thaheen, offline
+
+The student screens from the Claude Design project "Thaheen Flutter Learning
+App" (`Thaheen Screens.dc.html`, design system "Classical"). There is **no
+server yet**: the fixture backend, API contract, auth/`SessionNotifier`,
+route guard and `USE_MOCK_DATA`/`BASE_URL` sections below describe where the
+app goes once one exists; none of that code is here today.
+
+- **Content** is `assets/data/courses.<ar|en>.json` (same ids in both),
+  picked by `ContentLanguage`. Progress, notes, playback speed and theme live
+  in `SharedPreferences` (`lesson_progress`, `lesson_notes.<lessonId>`,
+  `playback_speed`, `theme_mode`).
+- **Feature layout** (asked for by the user):
+  `features/<name>/{models, views, views/widgets, cubit, repositories}`.
+  `cubit/` holds `x_cubit.dart` + `x_state.dart`; cubits (`BaseCubit`)
+  depend on repositories directly and there are no use cases. The repository
+  *is* the data layer, so every repository method runs inside
+  `guardedStorage`. `lesson_player` reuses the `courses` models and
+  `CourseRepository`.
+- **Rules** are plain model code so they unit-test without a player:
+  sequential unlock and progress % in `CourseProgress`, the 90% completion
+  rule in `LessonProgress.reachesCompletion` / `LessonProgress.watched`
+  (completion is sticky: rewinding keeps it). The player saves progress
+  every 5 s, on pause and on close, and `CourseRepository.progressChanges`
+  makes the list and details refresh quietly.
+- **Type**: `AppStrings.w400/w600(size, height)` is Lora with Noto Naskh
+  Arabic as fallback, `AppStrings.heading(size, height)` is Cormorant
+  Garamond with Amiri; default height 1.55 (the design system's body). Fonts
+  are bundled (offline) with their OFL texts registered in `bootstrap`.
+- **Palette** tokens are named after the light design's CSS variables; the
+  dark palette maps each to the step the dark frames (1k, 1l) use instead.
+- **Sample videos** come from `tool/sample_videos.swift` (no ffmpeg needed):
+  `swiftc -O tool/sample_videos.swift -o /tmp/sample_videos` then
+  `/tmp/sample_videos <out.mp4> <seconds> <title> <subtitle>` per lesson.
+  `assets/videos/physiology/lesson2.mp4` is **missing on purpose** so the
+  design's video-error state (1h) is reachable; a test asserts it.
+- **App icon** follows `Thaheen App Icon.dc.html`: «ذهين» in white Amiri on
+  the brand blue `#1D5999`. Regenerate every size from the repo root with
+  `swiftc -O tool/app_icon.swift -o /tmp/app_icon && /tmp/app_icon`: it
+  writes each iOS size listed in `AppIcon.appiconset/Contents.json` (opaque,
+  as the App Store requires) and, per Android density, a rounded legacy
+  `ic_launcher.png` plus the adaptive `ic_launcher_foreground.png` (the design
+  scaled to the 72 dp viewport, inside the 66 dp safe zone). The background is
+  `@color/ic_launcher_background`, and the foreground doubles as the
+  Android 13 monochrome layer.
+
+Found the hard way:
+
+- Awaiting a cached `SynchronousFuture` (e.g.
+  `AssetManifest.loadFromAssetBundle`) and then throwing in the same async
+  body reports the error as uncaught even though `guardedStorage` returns a
+  `Left`. Read such values in their own `async` helper first.
+- The engine renders `57%` as `%57` inside Arabic text. Use
+  `percentLabel` (`core/utils/percent_format.dart`, an LTR isolate) and wrap
+  percentages in `ar.json` in `⁦…⁩`.
+- iOS (26 simulator) applies the supported-orientation mask one request late,
+  so the fullscreen switch first allows every orientation, waits 150 ms, then
+  narrows (`_applyFullscreen` in `lesson_player_page.dart`).
+- go_router reuses a page when only its path parameter changes: key the
+  page's `BlocProvider` on that parameter as well as the locale.
+- `easy_localization` exports intl's `TextDirection`; add
+  `hide TextDirection` where Flutter's is meant.
+- The hooks in `.claude/settings.json` call `flutter_3.41.1`, which is not
+  installed, so the format/analyze hooks do nothing: run 3.47.3 by hand.
+
 ## The fixture backend
 
 `FixtureBackend` (a lazy singleton) stands in for the server: it answers
