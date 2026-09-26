@@ -28,6 +28,7 @@ YAML, tests included. Reasoning worth keeping goes in this file.
 
 ```bash
 flutter run --dart-define=USE_MOCK_DATA=false      # the live API instead of fixtures
+flutter run --dart-define=DEVICE_PREVIEW=false     # debug run without the device frame
 flutter run --dart-define=BASE_URL=https://staging.example.com/v1/
 ```
 
@@ -38,6 +39,16 @@ only decides which data source each repository is built with.
 `core/app/bootstrap.dart`: binding → localization → DI → session restore →
 `runApp`. Nothing may reach the network before `runApp` (the requests
 inspector's controller is created disabled by whoever asks first).
+
+`device_preview` is pinned to **1.3.1** (the user chose its in-app toolbar
+over 3.x, whose device picker only lives in a Flutter DevTools tab).
+`bootstrap` wraps the app in `DevicePreview(enabled: devicePreviewEnabled)`,
+outside `EasyLocalization`, and `App` passes `MaterialApp.builder` through
+`DevicePreview.appBuilder`. `devicePreviewEnabled` is always false in
+release; in debug it is on unless `--dart-define=DEVICE_PREVIEW=false`. The
+language stays with `easy_localization`, so the toolbar's locale picker does
+nothing; use the app's EN button. Don't upgrade to 3.x without asking: its
+API is different (`DevicePreview.enable()`, no wrapper, no toolbar).
 
 ## This app: Thaheen, offline
 
@@ -58,6 +69,17 @@ app goes once one exists; none of that code is here today.
   *is* the data layer, so every repository method runs inside
   `guardedStorage`. `lesson_player` reuses the `courses` models and
   `CourseRepository`.
+- **Widget tests** pump real pages with `pumpScreen`
+  (`test/support/widget_harness.dart`: 402×874, real translations, light
+  theme) and the fakes in `test/support/fakes.dart`; register the page's
+  cubits in `sl` in `setUp` and `sl.reset()` in `tearDown`. `README.md` lists
+  every test file for reviewers; keep it in step when adding tests.
+- **Loading delay** (asked for by the user, to show every loading state):
+  `CourseRepository.getLibrary`/`getCourse`,
+  `LessonMediaRepository.openVideo` and `LessonNotesRepository.getNotes`
+  wait `loadingDelay` (800 ms) before reading. It is a constructor parameter
+  (`delay:`), so tests pass `Duration.zero`; set the constants to zero to
+  remove it. Writes are never delayed.
 - **Rules** are plain model code so they unit-test without a player:
   sequential unlock and progress % in `CourseProgress`, the 90% completion
   rule in `LessonProgress.reachesCompletion` / `LessonProgress.watched`
@@ -68,13 +90,39 @@ app goes once one exists; none of that code is here today.
   Arabic as fallback, `AppStrings.heading(size, height)` is Cormorant
   Garamond with Amiri; default height 1.55 (the design system's body). Fonts
   are bundled (offline) with their OFL texts registered in `bootstrap`.
-- **Palette** tokens are named after the light design's CSS variables; the
-  dark palette maps each to the step the dark frames (1k, 1l) use instead.
-- **Sample videos** come from `tool/sample_videos.swift` (no ffmpeg needed):
+- **Palette**: white ground and the brand blue `#1D5999` (the user's call,
+  replacing the Classical system's paper `#F3F2F2` and gold). Token names are
+  still the design's CSS variables (`accent`, `accent100`, `neutral700`, …) so
+  widgets read like the design's CSS; values live only in `AppColors` and the
+  two palettes in `AppPalette`. The blue and cool-neutral ramps were generated
+  in OKLCH on the design system's lightness steps, keeping its contrast (brand
+  on white 7.1:1, muted text 6.5:1). Dark mode is a navy ground `#0E1824` with
+  light-blue `#82BCFF` accents. The inverted toast draws its icon in `p.bg`:
+  an accent would vanish on its ink background.
+- **Splash**: `flutter_native_splash` (config at the end of `pubspec.yaml`)
+  paints plain brand blue. `assets/splash/blank.png` is transparent on
+  purpose: Android 12+ always draws an icon, and without an image iOS gets a
+  one-pixel black dot. `bootstrap` holds the native splash
+  (`FlutterNativeSplash.preserve`) and `SplashPage` releases it after its first
+  frame, so no white frame shows while translations load. After re-running
+  `dart run flutter_native_splash:create`, set the root view `backgroundColor`
+  in `ios/Runner/Base.lproj/LaunchScreen.storyboard` back to the brand blue
+  (0.1137, 0.349, 0.6): the generator writes white there, and iOS shows it for
+  the first frame of the launch zoom. `SplashCubit` waits for the catalog and
+  progress plus at least 1.8 s; the page then fills the bar and `go`es to
+  `/courses`, which fades in (`CustomTransitionPage`). A load failure still
+  hands off, and the Courses screen reports it.
+- **Lesson videos**: العظام, المفاصل and أنواع العضلات (anatomy-1, -2, -4)
+  play the real 12 s clips in `assets/videos/thaheen_offline_video_assets/`
+  (each clip names its own section: bones and joints are the skeletal
+  system, muscles the muscular one). Every other lesson plays a placeholder
+  from `tool/sample_videos.swift` (no ffmpeg needed):
   `swiftc -O tool/sample_videos.swift -o /tmp/sample_videos` then
-  `/tmp/sample_videos <out.mp4> <seconds> <title> <subtitle>` per lesson.
-  `assets/videos/physiology/lesson2.mp4` is **missing on purpose** so the
-  design's video-error state (1h) is reachable; a test asserts it.
+  `/tmp/sample_videos <out.mp4> <seconds> <title> <subtitle>` per lesson;
+  never regenerate over the real clips. `duration_seconds` in both course
+  files must match the file. `assets/videos/physiology/lesson2.mp4` is
+  **missing on purpose** so the design's video-error state (1h) is
+  reachable; a test asserts it.
 - **App icon** follows `Thaheen App Icon.dc.html`: «ذهين» in white Amiri on
   the brand blue `#1D5999`. Regenerate every size from the repo root with
   `swiftc -O tool/app_icon.swift -o /tmp/app_icon && /tmp/app_icon`: it
@@ -93,7 +141,7 @@ Found the hard way:
   `Left`. Read such values in their own `async` helper first.
 - The engine renders `57%` as `%57` inside Arabic text. Use
   `percentLabel` (`core/utils/percent_format.dart`, an LTR isolate) and wrap
-  percentages in `ar.json` in `⁦…⁩`.
+  percentages in `ar.json` in `\u2066…\u2069`.
 - iOS (26 simulator) applies the supported-orientation mask one request late,
   so the fullscreen switch first allows every orientation, waits 150 ms, then
   narrows (`_applyFullscreen` in `lesson_player_page.dart`).
