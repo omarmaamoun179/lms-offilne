@@ -5,9 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_palette.dart';
 import '../../../../core/utils/app_strings.dart';
 import '../../../../core/widgets/header_icon_button.dart';
+import '../../cubit/lesson_player_cubit.dart';
+import '../../cubit/lesson_player_state.dart';
 import '../../models/playback_speed.dart';
-import '../../view_models/lesson_player_state.dart';
-import '../../view_models/lesson_player_view_model.dart';
 import 'video_stage.dart';
 
 class FullscreenPlayer extends StatelessWidget {
@@ -25,7 +25,7 @@ class _FullscreenHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
-    final vm = context.read<LessonPlayerViewModel>();
+    final cubit = context.read<LessonPlayerCubit>();
     final outline = p.onVideo.withValues(alpha: .5);
 
     String subtitle(LessonPlayerState state) {
@@ -35,7 +35,7 @@ class _FullscreenHeader extends StatelessWidget {
       return '${state.course?.course.title ?? ''} · $place';
     }
 
-    return BlocBuilder<LessonPlayerViewModel, LessonPlayerState>(
+    return BlocBuilder<LessonPlayerCubit, LessonPlayerState>(
       buildWhen: (previous, current) =>
           previous.speed != current.speed || previous.lesson != current.lesson,
       builder: (context, state) => Row(
@@ -43,7 +43,7 @@ class _FullscreenHeader extends StatelessWidget {
           AppBackButton(
             color: p.onVideo,
             borderColor: outline,
-            onTap: vm.exitFullscreen,
+            onTap: cubit.exitFullscreen,
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -67,7 +67,7 @@ class _FullscreenHeader extends StatelessWidget {
           ),
           const SizedBox(width: 14),
           GestureDetector(
-            onTap: vm.cycleSpeed,
+            onTap: cubit.cycleSpeed,
             child: Container(
               height: 34,
               padding: const EdgeInsets.symmetric(horizontal: 14),

@@ -8,8 +8,8 @@ import 'package:lms_offline/features/courses/models/course.dart';
 import 'package:lms_offline/features/courses/models/course_progress.dart';
 import 'package:lms_offline/features/courses/models/lesson_progress.dart';
 import 'package:lms_offline/features/courses/repositories/course_repository.dart';
-import 'package:lms_offline/features/courses/view_models/courses_state.dart';
-import 'package:lms_offline/features/courses/view_models/courses_view_model.dart';
+import 'package:lms_offline/features/courses/cubit/courses_state.dart';
+import 'package:lms_offline/features/courses/cubit/courses_cubit.dart';
 
 class _FakeCourseRepository implements CourseRepository {
   Either<Failure, CourseLibrary> library;
@@ -83,38 +83,38 @@ CourseLibrary _library() => CourseLibrary(
 
 void main() {
   late _FakeCourseRepository repository;
-  late CoursesViewModel viewModel;
+  late CoursesCubit cubit;
 
   setUp(() {
     repository = _FakeCourseRepository(Right(_library()));
-    viewModel = CoursesViewModel(repository);
+    cubit = CoursesCubit(repository);
   });
 
-  tearDown(() => viewModel.close());
+  tearDown(() => cubit.close());
 
   test('load shows the library with the lesson to continue', () async {
-    await viewModel.load();
+    await cubit.load();
 
-    expect(viewModel.state.status, CoursesStatus.loaded);
-    expect(viewModel.state.courses, hasLength(2));
-    expect(viewModel.state.continueWatching?.lesson.id, 'anatomy-1');
+    expect(cubit.state.status, CoursesStatus.loaded);
+    expect(cubit.state.courses, hasLength(2));
+    expect(cubit.state.continueWatching?.lesson.id, 'anatomy-1');
   });
 
   test('a failed first load is an error carrying the message', () async {
     repository.library = const Left(CacheFailure(message: 'broken'));
 
-    await viewModel.load();
+    await cubit.load();
 
-    expect(viewModel.state.status, CoursesStatus.error);
-    expect(viewModel.state.errorMessage, 'broken');
+    expect(cubit.state.status, CoursesStatus.error);
+    expect(cubit.state.errorMessage, 'broken');
   });
 
   test('search matches titles and instructors whatever the hamza', () async {
-    await viewModel.load();
+    await cubit.load();
     List<String> matches(String query) {
-      viewModel.search(query);
+      cubit.search(query);
       return [
-        for (final entry in viewModel.state.visibleCourses) entry.course.id,
+        for (final entry in cubit.state.visibleCourses) entry.course.id,
       ];
     }
 
@@ -127,28 +127,28 @@ void main() {
 
   test('searching hides the continue card and cancelling brings it back',
       () async {
-    await viewModel.load();
+    await cubit.load();
 
-    viewModel.startSearch();
-    final hidden = viewModel.state.continueWatching;
-    viewModel.cancelSearch();
+    cubit.startSearch();
+    final hidden = cubit.state.continueWatching;
+    cubit.cancelSearch();
 
     expect(hidden, isNull);
-    expect(viewModel.state.query, isEmpty);
-    expect(viewModel.state.continueWatching, isNotNull);
+    expect(cubit.state.query, isEmpty);
+    expect(cubit.state.continueWatching, isNotNull);
   });
 
   test('a progress change reloads quietly and keeps the list on failure',
       () async {
-    await viewModel.load();
+    await cubit.load();
     repository.library = const Left(CacheFailure(message: 'disk full'));
 
     repository.changes.add('anatomy-1');
-    await viewModel.stream.firstWhere((state) => state.errorMessage != null);
+    await cubit.stream.firstWhere((state) => state.errorMessage != null);
 
-    expect(viewModel.state.status, CoursesStatus.loaded);
-    expect(viewModel.state.courses, hasLength(2));
-    expect(viewModel.state.errorMessage, 'disk full');
+    expect(cubit.state.status, CoursesStatus.loaded);
+    expect(cubit.state.courses, hasLength(2));
+    expect(cubit.state.errorMessage, 'disk full');
   });
 
   test('matches are found in the original text despite folded letters', () {

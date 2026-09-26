@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/widgets/header_icon_button.dart';
 import '../../../../core/widgets/loading_view.dart';
-import '../../view_models/lesson_player_state.dart';
+import '../../cubit/lesson_player_state.dart';
 
 class LessonUnavailable extends StatelessWidget {
   final LessonPlayerState state;

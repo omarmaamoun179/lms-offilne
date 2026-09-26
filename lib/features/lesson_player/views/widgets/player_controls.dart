@@ -7,8 +7,8 @@ import '../../../../core/theme/app_palette.dart';
 import '../../../../core/utils/app_strings.dart';
 import '../../../../core/utils/duration_format.dart';
 import '../../../../core/widgets/app_icon.dart';
-import '../../view_models/lesson_player_state.dart';
-import '../../view_models/lesson_player_view_model.dart';
+import '../../cubit/lesson_player_cubit.dart';
+import '../../cubit/lesson_player_state.dart';
 import 'seek_bar.dart';
 
 class PlayerControls extends StatelessWidget {
@@ -19,7 +19,7 @@ class PlayerControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LessonPlayerViewModel, LessonPlayerState>(
+    return BlocBuilder<LessonPlayerCubit, LessonPlayerState>(
       buildWhen: (previous, current) =>
           previous.controlsVisible != current.controlsVisible ||
           previous.playing != current.playing ||
@@ -76,7 +76,7 @@ class PlayerControls extends StatelessWidget {
   }
 
   Widget _buildTransport(BuildContext context, LessonPlayerState state) {
-    final vm = context.read<LessonPlayerViewModel>();
+    final cubit = context.read<LessonPlayerCubit>();
     final gap = SizedBox(width: fullscreen ? 56 : 36);
 
     return Row(
@@ -86,20 +86,20 @@ class PlayerControls extends StatelessWidget {
           icon: AppIcons.replay10,
           label: 'skip_back'.tr(),
           large: fullscreen,
-          onTap: () => vm.seekBy(-LessonPlayerViewModel.skipStep),
+          onTap: () => cubit.seekBy(-LessonPlayerCubit.skipStep),
         ),
         gap,
         _PlayPauseButton(
           playing: state.playing,
           large: fullscreen,
-          onTap: vm.togglePlay,
+          onTap: cubit.togglePlay,
         ),
         gap,
         _SkipButton(
           icon: AppIcons.forward10,
           label: 'skip_forward'.tr(),
           large: fullscreen,
-          onTap: () => vm.seekBy(LessonPlayerViewModel.skipStep),
+          onTap: () => cubit.seekBy(LessonPlayerCubit.skipStep),
         ),
       ],
     );
@@ -107,7 +107,7 @@ class PlayerControls extends StatelessWidget {
 
   Widget _buildTimeline(BuildContext context, LessonPlayerState state) {
     final p = context.palette;
-    final vm = context.read<LessonPlayerViewModel>();
+    final cubit = context.read<LessonPlayerCubit>();
     final style = AppStrings.w400(fullscreen ? 13 : 12, 1).c(p.onVideo).tabular;
     final gap = SizedBox(width: fullscreen ? 14 : 10);
 
@@ -119,7 +119,7 @@ class PlayerControls extends StatelessWidget {
           child: SeekBar(
             value: state.fraction,
             thumbSize: fullscreen ? 15 : 13,
-            onSeek: (fraction) => vm.seekTo(state.totalDuration * fraction),
+            onSeek: (fraction) => cubit.seekTo(state.totalDuration * fraction),
           ),
         ),
         gap,
@@ -130,7 +130,7 @@ class PlayerControls extends StatelessWidget {
           label: (fullscreen ? 'fullscreen_exit' : 'fullscreen_enter').tr(),
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
-            onTap: vm.toggleFullscreen,
+            onTap: cubit.toggleFullscreen,
             child: Padding(
               padding: const EdgeInsets.all(3),
               child: AppIcon(

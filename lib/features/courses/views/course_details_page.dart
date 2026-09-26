@@ -12,10 +12,10 @@ import '../../../core/widgets/app_toast.dart';
 import '../../../core/widgets/header_icon_button.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../../../core/widgets/section_heading.dart';
+import '../cubit/course_details_cubit.dart';
+import '../cubit/course_details_state.dart';
 import '../models/course.dart';
 import '../models/course_progress.dart';
-import '../view_models/course_details_state.dart';
-import '../view_models/course_details_view_model.dart';
 import 'widgets/course_details_header.dart';
 import 'widgets/empty_course.dart';
 import 'widgets/lesson_row.dart';
@@ -30,7 +30,7 @@ class CourseDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       key: ValueKey('${context.locale.languageCode}/$courseId'),
-      create: (_) => sl<CourseDetailsViewModel>()..load(courseId),
+      create: (_) => sl<CourseDetailsCubit>()..load(courseId),
       child: const _CourseDetailsView(),
     );
   }
@@ -44,7 +44,7 @@ class _CourseDetailsView extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         bottom: false,
-        child: BlocConsumer<CourseDetailsViewModel, CourseDetailsState>(
+        child: BlocConsumer<CourseDetailsCubit, CourseDetailsState>(
           listenWhen: (previous, current) =>
               current.status == CourseDetailsStatus.loaded &&
               current.errorMessage != null,

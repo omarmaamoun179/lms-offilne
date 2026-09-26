@@ -9,8 +9,8 @@ import '../../../core/utils/app_strings.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../../../core/widgets/section_heading.dart';
-import '../view_models/courses_state.dart';
-import '../view_models/courses_view_model.dart';
+import '../cubit/courses_cubit.dart';
+import '../cubit/courses_state.dart';
 import 'widgets/continue_card.dart';
 import 'widgets/course_search_field.dart';
 import 'widgets/course_tile.dart';
@@ -25,7 +25,7 @@ class CoursesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       key: ValueKey(context.locale.languageCode),
-      create: (_) => sl<CoursesViewModel>()..load(),
+      create: (_) => sl<CoursesCubit>()..load(),
       child: const _CoursesView(),
     );
   }
@@ -56,13 +56,13 @@ class _CoursesViewState extends State<_CoursesView> {
   }
 
   void _onSearchFocus() {
-    if (_searchFocus.hasFocus) context.read<CoursesViewModel>().startSearch();
+    if (_searchFocus.hasFocus) context.read<CoursesCubit>().startSearch();
   }
 
   void _cancelSearch() {
     _search.clear();
     _searchFocus.unfocus();
-    context.read<CoursesViewModel>().cancelSearch();
+    context.read<CoursesCubit>().cancelSearch();
   }
 
   @override
@@ -70,7 +70,7 @@ class _CoursesViewState extends State<_CoursesView> {
     return Scaffold(
       body: SafeArea(
         bottom: false,
-        child: BlocConsumer<CoursesViewModel, CoursesState>(
+        child: BlocConsumer<CoursesCubit, CoursesState>(
           listenWhen: (previous, current) =>
               current.status == CoursesStatus.loaded &&
               current.errorMessage != null,
@@ -80,7 +80,7 @@ class _CoursesViewState extends State<_CoursesView> {
             CoursesStatus.loaded => _buildLoaded(context, state),
             CoursesStatus.error => ErrorView(
                 message: state.errorMessage ?? '',
-                onRetry: () => context.read<CoursesViewModel>().load(),
+                onRetry: () => context.read<CoursesCubit>().load(),
               ),
             _ => const CoursesSkeleton(),
           },
@@ -105,7 +105,7 @@ class _CoursesViewState extends State<_CoursesView> {
           controller: _search,
           focusNode: _searchFocus,
           searching: state.searching,
-          onChanged: context.read<CoursesViewModel>().search,
+          onChanged: context.read<CoursesCubit>().search,
           onCancel: _cancelSearch,
         ),
         if (continueWatching != null) ...[

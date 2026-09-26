@@ -7,9 +7,9 @@ import '../../../core/di/di_exports.dart';
 import '../../../core/theme/app_palette.dart';
 import '../../../core/widgets/app_sheet.dart';
 import '../../../core/widgets/app_toast.dart';
-import '../view_models/lesson_notes_view_model.dart';
-import '../view_models/lesson_player_state.dart';
-import '../view_models/lesson_player_view_model.dart';
+import '../cubit/lesson_notes_cubit.dart';
+import '../cubit/lesson_player_cubit.dart';
+import '../cubit/lesson_player_state.dart';
 import 'widgets/fullscreen_player.dart';
 import 'widgets/lesson_heading.dart';
 import 'widgets/lesson_unavailable.dart';
@@ -38,10 +38,10 @@ class LessonPlayerPage extends StatelessWidget {
       key: ValueKey('${context.locale.languageCode}/$lessonId'),
       providers: [
         BlocProvider(
-          create: (_) => sl<LessonPlayerViewModel>()
+          create: (_) => sl<LessonPlayerCubit>()
             ..load(courseId: courseId, lessonId: lessonId),
         ),
-        BlocProvider(create: (_) => sl<LessonNotesViewModel>()..load(lessonId)),
+        BlocProvider(create: (_) => sl<LessonNotesCubit>()..load(lessonId)),
       ],
       child: const _LessonPlayerView(),
     );
@@ -87,18 +87,18 @@ class _LessonPlayerViewState extends State<_LessonPlayerView> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<LessonPlayerViewModel, LessonPlayerState>(
+        BlocListener<LessonPlayerCubit, LessonPlayerState>(
           listenWhen: (previous, current) =>
               previous.fullscreen != current.fullscreen,
           listener: (context, state) => _applyFullscreen(state.fullscreen),
         ),
-        BlocListener<LessonPlayerViewModel, LessonPlayerState>(
+        BlocListener<LessonPlayerCubit, LessonPlayerState>(
           listenWhen: (previous, current) => current.errorMessage != null,
           listener: (context, state) =>
               showAppToast(context, state.errorMessage!, isError: true),
         ),
       ],
-      child: BlocBuilder<LessonPlayerViewModel, LessonPlayerState>(
+      child: BlocBuilder<LessonPlayerCubit, LessonPlayerState>(
         buildWhen: (previous, current) =>
             previous.status != current.status ||
             previous.fullscreen != current.fullscreen ||
@@ -106,7 +106,7 @@ class _LessonPlayerViewState extends State<_LessonPlayerView> {
         builder: (context, state) => PopScope(
           canPop: !state.fullscreen,
           onPopInvokedWithResult: (didPop, _) {
-            if (!didPop) context.read<LessonPlayerViewModel>().exitFullscreen();
+            if (!didPop) context.read<LessonPlayerCubit>().exitFullscreen();
           },
           child: Scaffold(
             backgroundColor: state.fullscreen ? context.palette.video : null,
@@ -162,8 +162,8 @@ class _LessonPlayerViewState extends State<_LessonPlayerView> {
   }
 
   Future<void> _openNotes(BuildContext context) async {
-    final player = context.read<LessonPlayerViewModel>();
-    final notes = context.read<LessonNotesViewModel>();
+    final player = context.read<LessonPlayerCubit>();
+    final notes = context.read<LessonNotesCubit>();
     final at = await player.pause();
     if (!context.mounted) return;
 

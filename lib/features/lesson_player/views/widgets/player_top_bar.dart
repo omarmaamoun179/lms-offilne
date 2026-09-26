@@ -6,8 +6,8 @@ import '../../../../core/theme/app_palette.dart';
 import '../../../../core/utils/app_strings.dart';
 import '../../../../core/utils/duration_format.dart';
 import '../../../../core/widgets/header_icon_button.dart';
-import '../../view_models/lesson_player_state.dart';
-import '../../view_models/lesson_player_view_model.dart';
+import '../../cubit/lesson_player_cubit.dart';
+import '../../cubit/lesson_player_state.dart';
 
 class PlayerTopBar extends StatelessWidget {
   const PlayerTopBar({super.key});
@@ -23,8 +23,7 @@ class PlayerTopBar extends StatelessWidget {
           const AppBackButton(),
           const SizedBox(width: 12),
           Expanded(
-            child: BlocSelector<LessonPlayerViewModel, LessonPlayerState,
-                String>(
+            child: BlocSelector<LessonPlayerCubit, LessonPlayerState, String>(
               selector: _crumb,
               builder: (context, crumb) => Text(
                 crumb,

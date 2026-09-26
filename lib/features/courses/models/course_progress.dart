@@ -6,8 +6,6 @@ import 'lesson_progress.dart';
 enum LessonStatus { completed, inProgress, available, locked }
 
 class CourseProgress extends Equatable {
-  static const double completionThreshold = .9;
-
   final Course course;
   final Map<String, LessonProgress> progress;
 

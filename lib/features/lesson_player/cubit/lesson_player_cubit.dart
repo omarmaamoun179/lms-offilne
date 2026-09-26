@@ -10,7 +10,7 @@ import '../models/playback_speed.dart';
 import '../repositories/lesson_media_repository.dart';
 import 'lesson_player_state.dart';
 
-class LessonPlayerViewModel extends BaseCubit<LessonPlayerState> {
+class LessonPlayerCubit extends BaseCubit<LessonPlayerState> {
   static const Duration skipStep = Duration(seconds: 10);
   static const Duration saveEvery = Duration(seconds: 5);
   static const Duration controlsTimeout = Duration(seconds: 3);
@@ -23,7 +23,7 @@ class LessonPlayerViewModel extends BaseCubit<LessonPlayerState> {
   Timer? _hideTimer;
   Duration _savedPosition = Duration.zero;
 
-  LessonPlayerViewModel(this._courses, this._media)
+  LessonPlayerCubit(this._courses, this._media)
       : super(const LessonPlayerState());
 
   VideoPlayerController? get controller => _controller;
@@ -118,14 +118,13 @@ class LessonPlayerViewModel extends BaseCubit<LessonPlayerState> {
 
     final position =
         value.position > value.duration ? value.duration : value.position;
-    final reachedEnd = value.duration > Duration.zero &&
-        position >= value.duration * CourseProgress.completionThreshold;
+    final reachedEnd =
+        LessonProgress.reachesCompletion(position, value.duration);
 
-    if (reachedEnd && !state.completed) {
-      _save(position, completed: true);
-    } else if ((position - _savedPosition).abs() >= saveEvery ||
+    if ((reachedEnd && !state.completed) ||
+        (position - _savedPosition).abs() >= saveEvery ||
         (state.playing && !value.isPlaying)) {
-      _save(position);
+      _save(position, value.duration);
     }
 
     final moved = position.inMilliseconds ~/ 250 !=
@@ -140,15 +139,11 @@ class LessonPlayerViewModel extends BaseCubit<LessonPlayerState> {
     ));
   }
 
-  Future<void> _save(Duration position, {bool completed = false}) async {
+  Future<void> _save(Duration position, Duration duration) async {
     final lesson = state.lesson!;
-    final progress = LessonProgress(
-      position: position,
-      completed: completed || state.completed,
-      updatedAt: DateTime.now(),
-    );
+    final progress = _progressAt(position, duration);
     _savedPosition = position;
-    if (completed) {
+    if (progress.completed && !state.completed) {
       emit(state.copyWith(
         course: state.course!.withProgress(lesson.id, progress),
         justCompleted: true,
@@ -265,15 +260,19 @@ class LessonPlayerViewModel extends BaseCubit<LessonPlayerState> {
       if (position != _savedPosition) {
         await _courses.saveProgress(
           state.lesson!.id,
-          LessonProgress(
-            position: position,
-            completed: state.completed,
-            updatedAt: DateTime.now(),
-          ),
+          _progressAt(position, controller.value.duration),
         );
       }
       await controller.dispose();
     }
     return super.close();
   }
+
+  LessonProgress _progressAt(Duration position, Duration duration) =>
+      LessonProgress.watched(
+        previous: state.course!.progressOf(state.lesson!),
+        position: position,
+        duration: duration,
+        at: DateTime.now(),
+      );
 }

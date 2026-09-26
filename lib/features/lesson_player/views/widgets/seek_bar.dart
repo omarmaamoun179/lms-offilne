@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_palette.dart';
+import '../../../courses/models/lesson_progress.dart';
 
 class SeekBar extends StatefulWidget {
   final double value;
@@ -12,7 +13,7 @@ class SeekBar extends StatefulWidget {
     super.key,
     required this.value,
     required this.onSeek,
-    this.marker = .9,
+    this.marker = LessonProgress.completionThreshold,
     this.thumbSize = 13,
   });
 

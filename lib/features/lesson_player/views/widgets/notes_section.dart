@@ -6,11 +6,11 @@ import '../../../../core/theme/app_palette.dart';
 import '../../../../core/utils/app_strings.dart';
 import '../../../../core/utils/duration_format.dart';
 import '../../../../core/widgets/section_heading.dart';
+import '../../cubit/lesson_notes_cubit.dart';
+import '../../cubit/lesson_notes_state.dart';
+import '../../cubit/lesson_player_cubit.dart';
+import '../../cubit/lesson_player_state.dart';
 import '../../models/lesson_note.dart';
-import '../../view_models/lesson_notes_state.dart';
-import '../../view_models/lesson_notes_view_model.dart';
-import '../../view_models/lesson_player_state.dart';
-import '../../view_models/lesson_player_view_model.dart';
 
 class NotesSection extends StatelessWidget {
   final VoidCallback onAdd;
@@ -20,7 +20,7 @@ class NotesSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
-    final player = context.read<LessonPlayerViewModel>();
+    final player = context.read<LessonPlayerCubit>();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -29,8 +29,7 @@ class NotesSection extends StatelessWidget {
           title: 'my_notes'.tr(),
           size: 19,
           gap: 6,
-          trailing: BlocSelector<LessonPlayerViewModel, LessonPlayerState,
-              int>(
+          trailing: BlocSelector<LessonPlayerCubit, LessonPlayerState, int>(
             selector: (state) => state.position.inSeconds,
             builder: (context, seconds) => GestureDetector(
               behavior: HitTestBehavior.opaque,
@@ -43,7 +42,7 @@ class NotesSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 10),
-        BlocBuilder<LessonNotesViewModel, LessonNotesState>(
+        BlocBuilder<LessonNotesCubit, LessonNotesState>(
           builder: (context, state) => switch (state.status) {
             NotesStatus.loading => const SizedBox.shrink(),
             NotesStatus.error => _buildMessage(context, state.errorMessage),

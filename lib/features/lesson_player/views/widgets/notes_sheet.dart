@@ -7,9 +7,9 @@ import '../../../../core/utils/app_strings.dart';
 import '../../../../core/utils/duration_format.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_sheet.dart';
-import '../../view_models/lesson_notes_state.dart';
-import '../../view_models/lesson_notes_view_model.dart';
-import '../../view_models/lesson_player_view_model.dart';
+import '../../cubit/lesson_notes_cubit.dart';
+import '../../cubit/lesson_notes_state.dart';
+import '../../cubit/lesson_player_cubit.dart';
 import 'notes_section.dart';
 
 class NotesSheet extends StatefulWidget {
@@ -39,7 +39,7 @@ class _NotesSheetState extends State<NotesSheet> {
     });
 
     final failure = await context
-        .read<LessonNotesViewModel>()
+        .read<LessonNotesCubit>()
         .add(widget.at, _text.text);
     if (!mounted) return;
 
@@ -54,7 +54,7 @@ class _NotesSheetState extends State<NotesSheet> {
   }
 
   void _seek(Duration position) {
-    context.read<LessonPlayerViewModel>().seekTo(position);
+    context.read<LessonPlayerCubit>().seekTo(position);
     Navigator.of(context).pop();
   }
 
@@ -69,7 +69,7 @@ class _NotesSheetState extends State<NotesSheet> {
         constraints: BoxConstraints(maxHeight: size.height * .75),
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(20, 14, 20, 32),
-          child: BlocBuilder<LessonNotesViewModel, LessonNotesState>(
+          child: BlocBuilder<LessonNotesCubit, LessonNotesState>(
             builder: (context, state) => Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisSize: MainAxisSize.min,

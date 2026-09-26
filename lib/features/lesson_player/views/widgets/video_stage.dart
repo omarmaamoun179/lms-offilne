@@ -5,8 +5,8 @@ import 'package:video_player/video_player.dart';
 import '../../../../core/theme/app_palette.dart';
 import '../../../../core/widgets/loading_view.dart';
 import '../../../../core/widgets/striped_box.dart';
-import '../../view_models/lesson_player_state.dart';
-import '../../view_models/lesson_player_view_model.dart';
+import '../../cubit/lesson_player_cubit.dart';
+import '../../cubit/lesson_player_state.dart';
 import 'player_controls.dart';
 
 class VideoStage extends StatelessWidget {
@@ -18,7 +18,7 @@ class VideoStage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
-    final vm = context.read<LessonPlayerViewModel>();
+    final cubit = context.read<LessonPlayerCubit>();
 
     return Stack(
       fit: StackFit.expand,
@@ -28,10 +28,10 @@ class VideoStage extends StatelessWidget {
           line: p.videoStripe,
           gap: fullscreen ? 10 : 8,
         ),
-        BlocSelector<LessonPlayerViewModel, LessonPlayerState, bool>(
+        BlocSelector<LessonPlayerCubit, LessonPlayerState, bool>(
           selector: (state) => state.status == PlayerStatus.ready,
           builder: (context, ready) {
-            final controller = vm.controller;
+            final controller = cubit.controller;
             if (!ready || controller == null) {
               return LoadingView(color: p.onVideo);
             }
@@ -47,7 +47,7 @@ class VideoStage extends StatelessWidget {
                 ),
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
-                  onTap: vm.toggleControls,
+                  onTap: cubit.toggleControls,
                 ),
                 PlayerControls(fullscreen: fullscreen, header: header),
               ],

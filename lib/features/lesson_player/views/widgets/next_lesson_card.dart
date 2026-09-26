@@ -8,15 +8,15 @@ import '../../../../core/theme/app_palette.dart';
 import '../../../../core/utils/app_strings.dart';
 import '../../../../core/utils/duration_format.dart';
 import '../../../../core/widgets/app_icon.dart';
-import '../../view_models/lesson_player_state.dart';
-import '../../view_models/lesson_player_view_model.dart';
+import '../../cubit/lesson_player_cubit.dart';
+import '../../cubit/lesson_player_state.dart';
 
 class NextLessonCard extends StatelessWidget {
   const NextLessonCard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LessonPlayerViewModel, LessonPlayerState>(
+    return BlocBuilder<LessonPlayerCubit, LessonPlayerState>(
       buildWhen: (previous, current) =>
           previous.course != current.course ||
           previous.lesson != current.lesson ||

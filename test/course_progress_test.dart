@@ -143,4 +143,88 @@ void main() {
 
     expect(library.continueWatching, isNull);
   });
+
+  group('the 90% completion rule', () {
+    const length = Duration(seconds: 108);
+    const ninetyPercent = Duration(milliseconds: 97200);
+    final now = DateTime(2026, 9, 5);
+
+    test('a lesson completes exactly at 90% of its length', () {
+      expect(LessonProgress.reachesCompletion(ninetyPercent, length), isTrue);
+      expect(
+        LessonProgress.reachesCompletion(const Duration(seconds: 105), length),
+        isTrue,
+      );
+    });
+
+    test('a millisecond before 90% the lesson is still in progress', () {
+      const almost = Duration(milliseconds: 97199);
+
+      final progress = LessonProgress.watched(
+        position: almost,
+        duration: length,
+        at: now,
+      );
+
+      expect(LessonProgress.reachesCompletion(almost, length), isFalse);
+      expect(progress.completed, isFalse);
+      expect(progress.position, almost);
+    });
+
+    test('watching past 90% records the lesson as completed', () {
+      final progress = LessonProgress.watched(
+        previous: _at(62, DateTime(2026, 9, 2)),
+        position: const Duration(seconds: 100),
+        duration: length,
+        at: now,
+      );
+
+      expect(progress.completed, isTrue);
+      expect(progress.position, const Duration(seconds: 100));
+      expect(progress.updatedAt, now);
+    });
+
+    test('rewinding a completed lesson keeps it completed', () {
+      final progress = LessonProgress.watched(
+        previous: _done(),
+        position: const Duration(seconds: 10),
+        duration: length,
+        at: now,
+      );
+
+      expect(progress.completed, isTrue);
+    });
+
+    test('a video whose length is unknown never completes', () {
+      expect(
+        LessonProgress.reachesCompletion(Duration.zero, Duration.zero),
+        isFalse,
+      );
+    });
+
+    test('reaching 90% of the current lesson unlocks the next one', () {
+      final before = CourseProgress(_course(), {
+        'l1': _done(),
+        'l2': _done(),
+        'l3': _at(62, DateTime(2026, 9, 2)),
+      });
+      final cartilage = before.lessonById('l3')!;
+      final muscles = before.lessonById('l4')!;
+
+      final after = before.withProgress(
+        'l3',
+        LessonProgress.watched(
+          previous: before.progressOf(cartilage),
+          position: ninetyPercent,
+          duration: cartilage.duration,
+          at: now,
+        ),
+      );
+
+      expect(before.statusOf(muscles), LessonStatus.locked);
+      expect(after.statusOf(cartilage), LessonStatus.completed);
+      expect(after.statusOf(muscles), LessonStatus.available);
+      expect(after.percent, 60);
+    });
+  });
 }

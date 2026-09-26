@@ -7,8 +7,8 @@ import '../../../../core/theme/app_icons.dart';
 import '../../../../core/theme/app_palette.dart';
 import '../../../../core/utils/app_strings.dart';
 import '../../../../core/widgets/app_button.dart';
-import '../../view_models/lesson_player_state.dart';
-import '../../view_models/lesson_player_view_model.dart';
+import '../../cubit/lesson_player_cubit.dart';
+import '../../cubit/lesson_player_state.dart';
 import 'lesson_heading.dart';
 import 'speed_selector.dart';
 
@@ -38,7 +38,7 @@ class PlayerFailureDetails extends StatelessWidget {
                 fontSize: 14.5,
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 expand: true,
-                onPressed: context.read<LessonPlayerViewModel>().retry,
+                onPressed: context.read<LessonPlayerCubit>().retry,
               ),
             ),
             const SizedBox(width: 10),

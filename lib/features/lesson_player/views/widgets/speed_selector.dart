@@ -4,9 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/theme/app_palette.dart';
 import '../../../../core/utils/app_strings.dart';
+import '../../cubit/lesson_player_cubit.dart';
+import '../../cubit/lesson_player_state.dart';
 import '../../models/playback_speed.dart';
-import '../../view_models/lesson_player_state.dart';
-import '../../view_models/lesson_player_view_model.dart';
 
 class SpeedSelector extends StatelessWidget {
   final bool enabled;
@@ -37,8 +37,8 @@ class SpeedSelector extends StatelessWidget {
                   border: Border.all(color: p.border),
                   borderRadius: BorderRadius.circular(4),
                 ),
-                child: BlocSelector<LessonPlayerViewModel, LessonPlayerState,
-                    double>(
+                child:
+                    BlocSelector<LessonPlayerCubit, LessonPlayerState, double>(
                   selector: (state) => state.speed,
                   builder: (context, speed) => Row(
                     children: [
@@ -73,7 +73,7 @@ class SpeedSelector extends StatelessWidget {
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () => context.read<LessonPlayerViewModel>().setSpeed(option),
+      onTap: () => context.read<LessonPlayerCubit>().setSpeed(option),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10),
         alignment: Alignment.center,

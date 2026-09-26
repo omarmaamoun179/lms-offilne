@@ -7,8 +7,8 @@ import '../../../../core/theme/app_palette.dart';
 import '../../../../core/utils/app_strings.dart';
 import '../../../../core/utils/duration_format.dart';
 import '../../../../core/widgets/app_icon.dart';
-import '../../view_models/lesson_player_state.dart';
-import '../../view_models/lesson_player_view_model.dart';
+import '../../cubit/lesson_player_cubit.dart';
+import '../../cubit/lesson_player_state.dart';
 
 class LessonHeading extends StatelessWidget {
   const LessonHeading({super.key});
@@ -17,7 +17,7 @@ class LessonHeading extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = context.palette;
 
-    return BlocBuilder<LessonPlayerViewModel, LessonPlayerState>(
+    return BlocBuilder<LessonPlayerCubit, LessonPlayerState>(
       buildWhen: (previous, current) =>
           previous.lesson != current.lesson ||
           previous.status != current.status ||

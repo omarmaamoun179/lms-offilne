@@ -3,11 +3,11 @@ import '../../../core/domain/failure.dart';
 import '../repositories/lesson_notes_repository.dart';
 import 'lesson_notes_state.dart';
 
-class LessonNotesViewModel extends BaseCubit<LessonNotesState> {
+class LessonNotesCubit extends BaseCubit<LessonNotesState> {
   final LessonNotesRepository _repository;
   String? _lessonId;
 
-  LessonNotesViewModel(this._repository) : super(const LessonNotesState());
+  LessonNotesCubit(this._repository) : super(const LessonNotesState());
 
   Future<void> load(String lessonId) async {
     _lessonId = lessonId;

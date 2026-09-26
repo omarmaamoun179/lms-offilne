@@ -4,11 +4,11 @@ import '../../../core/abstract/base_cubit.dart';
 import '../repositories/course_repository.dart';
 import 'courses_state.dart';
 
-class CoursesViewModel extends BaseCubit<CoursesState> {
+class CoursesCubit extends BaseCubit<CoursesState> {
   final CourseRepository _repository;
   late final StreamSubscription<String> _progressChanges;
 
-  CoursesViewModel(this._repository) : super(const CoursesState()) {
+  CoursesCubit(this._repository) : super(const CoursesState()) {
     _progressChanges = _repository.progressChanges.listen((_) => _fetch());
   }
 

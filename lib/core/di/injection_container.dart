@@ -25,8 +25,8 @@ void _registerCoursesFeature() {
     ),
   );
 
-  sl.registerFactory(() => CoursesViewModel(sl<CourseRepository>()));
-  sl.registerFactory(() => CourseDetailsViewModel(sl<CourseRepository>()));
+  sl.registerFactory(() => CoursesCubit(sl<CourseRepository>()));
+  sl.registerFactory(() => CourseDetailsCubit(sl<CourseRepository>()));
 }
 
 void _registerLessonPlayerFeature() {
@@ -41,12 +41,12 @@ void _registerLessonPlayerFeature() {
   );
 
   sl.registerFactory(
-    () => LessonPlayerViewModel(
+    () => LessonPlayerCubit(
       sl<CourseRepository>(),
       sl<LessonMediaRepository>(),
     ),
   );
-  sl.registerFactory(() => LessonNotesViewModel(sl<LessonNotesRepository>()));
+  sl.registerFactory(() => LessonNotesCubit(sl<LessonNotesRepository>()));
 }
 
 Future<void> resetDependencies() => sl.reset();
