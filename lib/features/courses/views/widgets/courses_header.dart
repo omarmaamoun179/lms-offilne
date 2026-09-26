@@ -81,10 +81,10 @@ class CoursesHeader extends StatelessWidget {
   }
 
   static String _greetingKey(DateTime now) => switch (now.hour) {
-        >= 5 && < 12 => 'greeting_morning',
-        >= 12 && < 17 => 'greeting_afternoon',
-        _ => 'greeting_evening',
-      };
+    >= 5 && < 12 => 'greeting_morning',
+    >= 12 && < 17 => 'greeting_afternoon',
+    _ => 'greeting_evening',
+  };
 }
 
 class CoursesTitle extends StatelessWidget {

@@ -37,8 +37,8 @@ void main() {
             for (final lesson in entry.lessons) '${entry.course.id}/${lesson.id}',
         ];
 
-    expect(ar.studentName, 'نورة');
-    expect(en.studentName, 'Noura');
+    expect(ar.studentName, 'عمر');
+    expect(en.studentName, 'Omar');
     expect(ids(ar), ids(en));
     expect(ar.courses.map((entry) => entry.course.id), [
       'anatomy',
