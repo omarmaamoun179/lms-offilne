@@ -1,40 +1,71 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lms_offline/core/domain/failure.dart';
+import 'package:lms_offline/core/security/secure_video_server.dart';
+import 'package:lms_offline/core/security/video_key.dart';
 import 'package:lms_offline/features/courses/models/course.dart';
 import 'package:lms_offline/features/lesson_player/repositories/lesson_media_repository.dart';
 import 'package:lms_offline/features/lesson_player/repositories/lesson_notes_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 
+Future<Uint8List> _get(Uri uri, {String? range}) async {
+  final client = HttpClient();
+  try {
+    final request = await client.getUrl(uri);
+    if (range != null) request.headers.set(HttpHeaders.rangeHeader, range);
+    final response = await request.close();
+    final builder = BytesBuilder(copy: false);
+    await response.forEach(builder.add);
+    return builder.takeBytes();
+  } finally {
+    client.close(force: true);
+  }
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   late SharedPreferences prefs;
+  late SecureVideoServer server;
 
   setUp(() async {
+    HttpOverrides.global = null;
     SharedPreferences.setMockInitialValues({});
     prefs = await SharedPreferences.getInstance();
+    server = SecureVideoServer();
   });
+
+  tearDown(() => server.close());
+
+  LessonMediaRepositoryImpl media({VideoControllerFactory? createController}) =>
+      LessonMediaRepositoryImpl(
+        rootBundle,
+        prefs,
+        server,
+        videoKey(),
+        createController: createController,
+        delay: Duration.zero,
+      );
 
   group('LessonMediaRepository', () {
     test('a lesson whose video is not bundled fails with video_source_error',
         () async {
       var created = false;
-      final repository = LessonMediaRepositoryImpl(
-        rootBundle,
-        prefs,
-        createController: (asset) {
+      final repository = media(
+        createController: (source) {
           created = true;
-          return VideoPlayerController.asset(asset);
+          return VideoPlayerController.networkUrl(source);
         },
-        delay: Duration.zero,
       );
       const lesson = Lesson(
         id: 'physiology-2',
         title: 'Pulmonary Circulation',
         duration: Duration(seconds: 160),
-        video: 'assets/videos/physiology/lesson2.mp4',
+        video: 'assets/videos/physiology/lesson2.enc',
       );
 
       final result = await repository.openVideo(
@@ -53,13 +84,36 @@ void main() {
       );
     });
 
+    test('a bundled lesson is decrypted and served only on loopback',
+        () async {
+      Uri? served;
+      final repository = media(
+        createController: (source) {
+          served = source;
+          throw StateError('unit tests have no native video player');
+        },
+      );
+      const lesson = Lesson(
+        id: 'anatomy-3',
+        title: 'Cartilage',
+        duration: Duration(seconds: 108),
+        video: 'assets/videos/anatomy/lesson3.enc',
+      );
+      final original = File('media/videos/anatomy/lesson3.mp4').readAsBytesSync();
+
+      await repository.openVideo(lesson, startAt: Duration.zero, speed: 1);
+
+      expect(served?.host, '127.0.0.1');
+      expect(await _get(served!), original);
+      expect(
+        await _get(served!, range: 'bytes=100-199'),
+        original.sublist(100, 200),
+      );
+    });
+
     test('playback speed starts at 1x and remembers the last choice',
         () async {
-      final repository = LessonMediaRepositoryImpl(
-        rootBundle,
-        prefs,
-        delay: Duration.zero,
-      );
+      final repository = media();
 
       final initial = await repository.getSpeed();
       await repository.saveSpeed(1.25);
@@ -72,13 +126,8 @@ void main() {
     test('a stored speed the player does not offer falls back to 1x',
         () async {
       await prefs.setDouble(LessonMediaRepositoryImpl.speedKey, 3);
-      final repository = LessonMediaRepositoryImpl(
-        rootBundle,
-        prefs,
-        delay: Duration.zero,
-      );
 
-      final speed = await repository.getSpeed();
+      final speed = await media().getSpeed();
 
       expect(speed.getOrElse(() => 0), 1);
     });

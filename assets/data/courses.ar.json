@@ -17,19 +17,19 @@
               "id": "anatomy-1",
               "title": "العظام",
               "duration_seconds": 12,
-              "video": "assets/videos/thaheen_offline_video_assets/lesson_bones.mp4"
+              "video": "assets/videos/thaheen_offline_video_assets/lesson_bones.enc"
             },
             {
               "id": "anatomy-2",
               "title": "المفاصل",
               "duration_seconds": 12,
-              "video": "assets/videos/thaheen_offline_video_assets/lesson_joints.mp4"
+              "video": "assets/videos/thaheen_offline_video_assets/lesson_joints.enc"
             },
             {
               "id": "anatomy-3",
               "title": "الغضاريف",
               "duration_seconds": 108,
-              "video": "assets/videos/anatomy/lesson3.mp4"
+              "video": "assets/videos/anatomy/lesson3.enc"
             }
           ]
         },
@@ -41,13 +41,13 @@
               "id": "anatomy-4",
               "title": "أنواع العضلات",
               "duration_seconds": 12,
-              "video": "assets/videos/thaheen_offline_video_assets/lesson_muscles.mp4"
+              "video": "assets/videos/thaheen_offline_video_assets/lesson_muscles.enc"
             },
             {
               "id": "anatomy-5",
               "title": "الانقباض العضلي",
               "duration_seconds": 185,
-              "video": "assets/videos/anatomy/lesson5.mp4"
+              "video": "assets/videos/anatomy/lesson5.enc"
             }
           ]
         }
@@ -67,19 +67,19 @@
               "id": "physiology-1",
               "title": "بنية القلب",
               "duration_seconds": 125,
-              "video": "assets/videos/physiology/lesson1.mp4"
+              "video": "assets/videos/physiology/lesson1.enc"
             },
             {
               "id": "physiology-2",
               "title": "الدورة الدموية الصغرى",
               "duration_seconds": 160,
-              "video": "assets/videos/physiology/lesson2.mp4"
+              "video": "assets/videos/physiology/lesson2.enc"
             },
             {
               "id": "physiology-3",
               "title": "الدورة الدموية الكبرى",
               "duration_seconds": 175,
-              "video": "assets/videos/physiology/lesson3.mp4"
+              "video": "assets/videos/physiology/lesson3.enc"
             }
           ]
         },
@@ -91,13 +91,13 @@
               "id": "physiology-4",
               "title": "الرئتان",
               "duration_seconds": 135,
-              "video": "assets/videos/physiology/lesson4.mp4"
+              "video": "assets/videos/physiology/lesson4.enc"
             },
             {
               "id": "physiology-5",
               "title": "تبادل الغازات",
               "duration_seconds": 190,
-              "video": "assets/videos/physiology/lesson5.mp4"
+              "video": "assets/videos/physiology/lesson5.enc"
             }
           ]
         }

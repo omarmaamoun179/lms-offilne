@@ -7,10 +7,12 @@ import '../../../core/data/guarded_storage.dart';
 import '../../../core/domain/failure.dart';
 import '../../../core/domain/failure_mapper.dart';
 import '../../../core/exceptions/app_exceptions.dart';
+import '../../../core/security/secure_video_server.dart';
+import '../../../core/security/video_cipher.dart';
 import '../../courses/models/course.dart';
 import '../models/playback_speed.dart';
 
-typedef VideoControllerFactory = VideoPlayerController Function(String asset);
+typedef VideoControllerFactory = VideoPlayerController Function(Uri source);
 
 abstract class LessonMediaRepository {
   Future<Either<Failure, VideoPlayerController>> openVideo(
@@ -32,15 +34,19 @@ class LessonMediaRepositoryImpl implements LessonMediaRepository {
 
   final AssetBundle _assets;
   final SharedPreferences _prefs;
+  final SecureVideoServer _server;
+  final Uint8List _key;
   final VideoControllerFactory _createController;
   final Duration delay;
 
   LessonMediaRepositoryImpl(
     this._assets,
-    this._prefs, {
+    this._prefs,
+    this._server,
+    this._key, {
     VideoControllerFactory? createController,
     this.delay = loadingDelay,
-  }) : _createController = createController ?? VideoPlayerController.asset;
+  }) : _createController = createController ?? VideoPlayerController.networkUrl;
 
   @override
   Future<Either<Failure, VideoPlayerController>> openVideo(
@@ -56,7 +62,14 @@ class LessonMediaRepositoryImpl implements LessonMediaRepository {
             throw const MediaException();
           }
 
-          final controller = _createController(lesson.video);
+          final data = await _assets.load(lesson.video);
+          final video = EncryptedVideo.open(
+            data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes),
+            _key,
+          );
+          final source = await _server.register(lesson.id, video);
+
+          final controller = _createController(source);
           try {
             await controller.initialize();
             if (controller.value.hasError) throw const MediaException();

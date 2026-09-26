@@ -15,6 +15,7 @@ Future<void> _registerCore() async {
   sl.registerSingleton<ContentLanguage>(ContentLanguage());
   sl.registerSingleton<ThemeStore>(ThemeStore(sl<SharedPreferences>()));
   sl.registerLazySingleton<ThemeCubit>(() => ThemeCubit(sl<ThemeStore>()));
+  sl.registerLazySingleton<SecureVideoServer>(SecureVideoServer.new);
 }
 
 void _registerCoursesFeature() {
@@ -35,6 +36,8 @@ void _registerLessonPlayerFeature() {
     () => LessonMediaRepositoryImpl(
       sl<AssetBundle>(),
       sl<SharedPreferences>(),
+      sl<SecureVideoServer>(),
+      videoKey(),
     ),
   );
   sl.registerLazySingleton<LessonNotesRepository>(
